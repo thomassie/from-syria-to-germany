@@ -535,16 +535,16 @@
       stock: { sex: 'destatis', title: () => 'Syrian citizens in the foreigners’ register, end of each year',
         key: () => '<span><i class="syr-sw syr-sw--tot"></i>Syrian citizens</span>',
         note: () => `${dsrc('foreigners’ register', '12521-0009')} Rounded to 5. The count for the end of 2015 is too low: many people who came in 2015 were entered only in 2016.`,
-        draw: (svg, w, h) => drawCols(svg, w, h, ofSex(REG_ALL, SEX).map((r) => ({ y: r.y, v: r.s1 })), [['v', 'syr-tot']], false, d3.max(REG, (r) => r.s1)) },
+        draw: (svg, w, h) => drawCols(svg, w, h, ofSex(REG_ALL, SEX).map((r) => ({ y: r.y, v: r.s1 })), [['v', 'syr-tot', 'In the register, end of year']], false, d3.max(REG, (r) => r.s1), null, 'Syrian citizens') },
       nat: { sex: 'destatis', title: () => 'Naturalisations of Syrian citizens, per year',
         key: () => '<span><i class="syr-sw syr-sw--tot"></i>Naturalisations</span>',
         note: () => dsrc('naturalisation statistics', '12511-0002'),
-        draw: (svg, w, h) => drawCols(svg, w, h, ofSex(NAT_ALL, SEX), [['v', 'syr-tot']], false, d3.max(NAT, (r) => r.v)) },
+        draw: (svg, w, h) => drawCols(svg, w, h, ofSex(NAT_ALL, SEX), [['v', 'syr-tot', 'Naturalisations']], false, d3.max(NAT, (r) => r.v), null, 'Syrian citizens') },
       status: { sex: 'destatis', title: () => 'Syrian protection seekers by protection status, end of each year',
         key: () => '<span><i class="syr-sw syr-o1"></i>Permanent protection</span><span><i class="syr-sw syr-o2"></i>Protection for a limited time</span><span><i class="syr-sw syr-o3"></i>Open</span><span><i class="syr-sw syr-o4"></i>Rejected protection status</span>',
         note: () => dsrc('protection seekers', '12531-0008', ', 31 December'),
-        draw: (svg, w, h) => drawCols(svg, w, h, ofSex(STS_ALL, SEX), [['rp', 'syr-o1'], ['rl', 'syr-o2'], ['o', 'syr-o3'], ['x', 'syr-o4']], true,
-          d3.max(STS, (r) => r.rp + r.rl + r.o + r.x)) },
+        draw: (svg, w, h) => drawCols(svg, w, h, ofSex(STS_ALL, SEX), [['rp', 'syr-o1', 'Permanent protection'], ['rl', 'syr-o2', 'Protection for a limited time'],
+          ['o', 'syr-o3', 'Open'], ['x', 'syr-o4', 'Rejected protection status']], true, d3.max(STS, (r) => r.rp + r.rl + r.o + r.x), null, 'Syrian protection seekers, end of year') },
       stay: { sex: 'destatis', title: () => `Syrian protection seekers by length of stay, end of ${stayYear}`,
         key: () => '<span><i class="syr-sw syr-sw--tot"></i>Protection seekers</span><span>Grey: years of first entry</span>',
         note: () => `${dsrc('protection seekers', '12531-0006')} Years of first entry read from the length of stay.`,
@@ -552,7 +552,7 @@
       group: { sex: 'destatis', title: () => 'Syrian protection seekers who first came in 2015 or 2016, end of year',
         key: () => '<span><i class="syr-sw syr-sw--tot"></i>Protection seekers, first entry 2015–2016</span>',
         note: () => `${dsrc('protection seekers by length of stay', '12531-0006', ', 31 December')} Years of first entry read from the length of stay.`,
-        draw: (svg, w, h) => drawCols(svg, w, h, groupFor(SEX), [['v', 'syr-tot']], false, d3.max(GROUP, (r) => r.v)) },
+        draw: (svg, w, h) => drawCols(svg, w, h, groupFor(SEX), [['v', 'syr-tot', 'First entry 2015–2016']], false, d3.max(GROUP, (r) => r.v), null, 'Syrian protection seekers, end of year') },
       where: { sex: 'destatis', title: () => `Syrian protection seekers by county, end of ${ctyYear}`,
         key: () => `<span>Protection seekers, circle area:</span>${sizeKey(mapKey, 'syr-dot')}`,
         note: () => `${dsrc('protection seekers', '12531-0043', ', 31 December')} Map: VG250, ${bkgNote()}.`,
@@ -568,7 +568,8 @@
       levels: { title: () => 'Syrian citizens in a job subject to social security (apprentices not included), by what the job requires',
         key: () => '<span><i class="syr-sw syr-o1"></i>Expert</span><span><i class="syr-sw syr-o2"></i>Specialist</span><span><i class="syr-sw syr-o3"></i>Skilled</span><span><i class="syr-sw syr-o4"></i>Helper</span>',
         note: () => { return `${basrc()} Apprentices not included; the total above a column includes jobs whose level is not known. December of each year; the last column the latest month the agency has counted.`; },
-        draw: (svg, w, h) => drawCols(svg, w, h, WLY, [['ex', 'syr-o1'], ['sp', 'syr-o2'], ['sk', 'syr-o3'], ['he', 'syr-o4']], true, null, (r) => r.t) },
+        draw: (svg, w, h) => drawCols(svg, w, h, WLY, [['ex', 'syr-o1', 'Expert'], ['sp', 'syr-o2', 'Specialist'], ['sk', 'syr-o3', 'Skilled'], ['he', 'syr-o4', 'Helper']], true, null, (r) => r.t,
+          'Syrian citizens in a job subject to social security', 'All, with level not known') },
       support: { sex: 'ba', title: () => 'Syrian citizens receiving basic income support, and unemployed, per month',
         key: () => '<span><i class="syr-sw syr-sw--sup"></i>Receiving basic income support, able to work</span><span><i class="syr-ln"></i>Registered unemployed</span>',
         note: () => `${basrc()} Basic income support (SGB II), published after a waiting period of three months.`,
@@ -576,30 +577,33 @@
       departures: { title: () => 'Voluntary departures of Syrian citizens, per month',
         key: () => `<span><i class="syr-sw syr-o1"></i>With return support</span><span><i class="syr-sw syr-o3"></i>Without</span>${depGap.length ? '<span><i class="syr-sw syr-sw--gap"></i>No figures</span>' : ''}`,
         note: () => 'Source: federal government, answers to the Bundestag (foreigners’ register): 2025 as recorded on 31 October 2025, 2026 provisional. Recorded departures; the true number is higher.',
-        draw: (svg, w, h) => drawCols(svg, w, h, DEP, [['w', 'syr-o1'], ['o', 'syr-o3']], true) },
+        draw: (svg, w, h) => drawCols(svg, w, h, DEP, [['w', 'syr-o1', 'With return support'], ['o', 'syr-o3', 'Without']], true, null, null, 'Voluntary departures, Syrian citizens') },
       reviews: { title: () => 'Reviews of protection granted to Syrian citizens: decisions per year',
         key: () => '<span><i class="syr-sw syr-o1"></i>Protection revoked or withdrawn</span><span><i class="syr-sw syr-o4"></i>Protection kept</span>',
         note: () => 'Source: federal government, answer to the Bundestag (Federal Office for Migration and Refugees). Decisions in a year concern reviews started earlier.',
-        draw: (svg, w, h) => drawCols(svg, w, h, REV, [['rev', 'syr-o1'], ['kept', 'syr-o4']], true) },
+        draw: (svg, w, h) => drawCols(svg, w, h, REV, [['rev', 'syr-o1', 'Protection revoked or withdrawn'], ['kept', 'syr-o4', 'Protection kept']], true, null, null, 'Decisions on reviews', 'All decisions') },
       moves: { title: () => 'Moves of Syrian citizens across Germany’s border, per year',
         key: () => '<span><i class="syr-sw syr-o1"></i>From Germany to another country</span><span><i class="syr-sw syr-o4"></i>To Germany</span>',
         note: () => `${dsrc('migration statistics', '12711-0007')} Moves, not people; by citizenship, not destination.`,
-        draw: (svg, w, h) => drawCols(svg, w, h, MIG, [['o', 'syr-o1'], ['i', 'syr-o4']]) },
+        draw: (svg, w, h) => drawCols(svg, w, h, MIG, [['o', 'syr-o1', 'From Germany to another country'], ['i', 'syr-o4', 'To Germany']], false, null, null, 'Moves of Syrian citizens') },
       tosyria: { title: () => 'Moves from Germany to Syria, per year, by citizenship',
         key: () => '<span><i class="syr-sw syr-o1"></i>Foreign citizens</span><span><i class="syr-sw syr-o3"></i>German citizens</span>',
         note: () => `${dsrc('migration statistics by country of origin and destination', '12711-0008')} Moves, not people; citizenship only German or foreign. A scale of its own, smaller than the previous graphic’s.`,
-        draw: (svg, w, h) => drawCols(svg, w, h, TS, [['of', 'syr-o1'], ['og', 'syr-o3']], true, null, (r) => r.o) },
+        draw: (svg, w, h) => drawCols(svg, w, h, TS, [['of', 'syr-o1', 'Foreign citizens'], ['og', 'syr-o3', 'German citizens']], true, null, (r) => r.o,
+          'Moves from Germany to Syria', 'All moves to Syria') },
       prep: { title: () => 'In preparation', key: () => '', note: () => '', draw: drawPrep },
     };
 
     function show(i, animate) {
       const s = STEPS[i], S = SCENES[s.scene];
+      tip.hide();
       if (s.scene !== scene || !update) {
         scene = s.scene;
         chart.innerHTML = '';
         const w = chart.clientWidth, h = chart.clientHeight;
         if (!w || !h) return;
         const svg = d3.select(chart).append('svg').attr('width', w).attr('height', h).attr('viewBox', `0 0 ${w} ${h}`).attr('aria-hidden', 'true');
+        chart.appendChild(tip.el);   // re-attached after each redraw empties the chart
         update = S.draw(svg, w, h);
         animate = false;
       }
@@ -612,12 +616,14 @@
         : S.sex === 'ba' ? (s.scene === 'employed' ? ' Male and female from January 2020, without apprentices; the scale is that of all.' : ' Male and female from January 2020; the scale is that of all.')
         : s.scene === 'nat' ? ' Destatis&rsquo; total and the two parts can differ by a few; the scale is that of all.' : ' Male and female each rounded to 5; the scale is that of all.')
         + ' Figures in the text are for all.' : '');
+      // hidden where the graphic has no data by sex (its place kept, so the graphic does not move)
       sexEl.classList.toggle('is-off', !sexOn);
-      sexEl.title = sexOn ? '' : 'Not shown by sex here';
+      sexEl.inert = !sexOn;
+      sexEl.setAttribute('aria-hidden', String(!sexOn));
       sexEl.querySelectorAll('button').forEach((b) => { b.disabled = !sexOn; });
     }
 
-    // the switch: All / Male / Female, for the graphics whose data has sex; dimmed and inactive on the others
+    // the switch: All / Male / Female, for the graphics whose data has sex; hidden on the others
     const sexEl = $('#sex');
     sexEl.innerHTML = SEXES.map(([k, l]) => `<button type="button" data-sx="${k}" aria-pressed="${k === SEX}">${l}</button>`).join('');
     sexEl.addEventListener('click', (e) => {
@@ -628,6 +634,77 @@
       scene = null; update = null;
       if (active >= 0) show(active, false);
     });
+
+    // ---------- tooltips ----------
+    // what the graphic shows under the pointer: hover with a mouse or pen, tap on a touch screen (a tap outside the
+    // graphic closes it). The pages' shared tooltip: meta line (when), title (where), rows of figures, a note.
+    function tooltip(container) {
+      const el = document.createElement('div');
+      el.className = 'tooltip';
+      el.hidden = true;
+      el.setAttribute('aria-hidden', 'true');   // as the graphic: the steps carry its description
+      container.appendChild(el);
+      let clear = null;
+      return {
+        el,
+        show(html, x, y, mark) {
+          el.innerHTML = html;
+          el.hidden = false;
+          const cw = container.clientWidth, ch = container.clientHeight, tw = el.offsetWidth, th = el.offsetHeight;
+          let left = x + 14;
+          if (left + tw > cw) left = x - tw - 14;
+          if (left < 0) left = Math.max(0, Math.min(cw - tw, x - tw / 2));
+          let top = y - th - 14;
+          if (top < 0) top = Math.min(y + 18, Math.max(0, ch - th));
+          el.style.left = `${left}px`;
+          el.style.top = `${top}px`;
+          if (clear && clear !== mark) clear(null);
+          clear = mark || null;
+        },
+        hide() { el.hidden = true; if (clear) { clear(null); clear = null; } },
+      };
+    }
+    const tip = tooltip(chart);
+    document.addEventListener('click', (e) => { if (!chart.contains(e.target)) tip.hide(); });
+    chart.addEventListener('click', () => tip.hide());   // a tap on the graphic away from its marks (a mark's own tap stops here)
+    const ym = d3.timeFormat('%Y-%m');
+    const sexWord = () => (SEX === 'T' ? '' : SEX === 'M' ? ' · male' : ' · female');
+    const ttRow = (sw, label, value) => `<div><dt>${sw ? `<i class="${sw}"></i>` : ''}${label}</dt><dd>${value}</dd></div>`;
+    const ttHtml = (meta, title, rows, note) => `<div class="tt__meta">${meta}</div>${title ? `<div class="tt__title">${title}</div>` : ''}`
+      + `<dl class="tt__rows">${rows.join('')}</dl>${note ? `<p class="tt__note">${note}</p>` : ''}`;
+    // a target on the graphic: pick(event, datum) returns [html, what to mark] or null; mark(what) draws the hover
+    // mark and mark(null) removes it
+    function tipOn(target, pick, mark) {
+      target.on('pointermove click', (e, d) => {
+        const hit = pick(e, d);
+        if (!hit) { tip.hide(); return; }
+        if (mark) mark(hit[1]);
+        const [px, py] = d3.pointer(e, chart);
+        tip.show(hit[0], px, py, mark);
+        if (e.type === 'click') e.stopPropagation();
+      }).on('pointerleave', (e) => { if (e.pointerType !== 'touch') tip.hide(); });
+    }
+    // over time: the month under the pointer, a hairline at it and a dot on each series. at(t) returns
+    // { html, ys: [[y, class]] } or null; mid: the month drawn as a step (its middle) or as a point (its start)
+    function tipTime(svg, x, m, w, h, at, mid = true) {
+      const hair = svg.append('line').attr('class', 'syr-hair').attr('y1', m.t).attr('y2', h - m.b).style('display', 'none');
+      const dots = svg.append('g');
+      const over = svg.append('rect').attr('class', 'overlay').attr('x', m.l).attr('y', m.t)
+        .attr('width', Math.max(0, w - m.r - m.l)).attr('height', Math.max(0, h - m.b - m.t));
+      const cx = (t) => (mid ? (x(t) + x(d3.timeMonth.offset(t, 1))) / 2 : x(t));
+      tipOn(over, (e) => {
+        const [px] = d3.pointer(e, svg.node());
+        const t = mid ? d3.timeMonth.floor(x.invert(px)) : d3.timeMonth.round(x.invert(px));
+        const hit = at(t);
+        return hit ? [hit.html, { t, ys: hit.ys || [] }] : null;
+      }, (d) => {
+        dots.selectAll('*').remove();
+        hair.style('display', d ? null : 'none');
+        if (!d) return;
+        hair.attr('x1', cx(d.t)).attr('x2', cx(d.t));
+        d.ys.forEach(([yy, cls]) => dots.append('circle').attr('class', `syr-hdot${cls ? ` ${cls}` : ''}`).attr('cx', cx(d.t)).attr('cy', yy).attr('r', 3.5));
+      });
+    }
 
     // shared drawing parts
     function gridY(svg, y, m, w, fmt, ticks = 4) {
@@ -704,6 +781,10 @@
         svg.append('text').attr('class', 'syr-label').attr('x', x1).attr('y', yb + 13).attr('text-anchor', 'end').text('Preliminary');
       }
       const evg = svg.append('g');
+      const byM = new Map(W.map((r) => [r.m, r]));
+      tipTime(svg, x, m, w, h, (t) => { const r = byM.get(ym(t)); return r && {
+        html: ttHtml(mName(r.m), 'Syria', [ttRow('syr-sw syr-sw--dead', 'Deaths (UCDP best estimate)', num(r.v))], r.p ? 'Preliminary: UCDP Candidate data.' : ''),
+        ys: [[y(r.v)]] }; });
       return (s, dur) => { setBand(rect, x, s.range[0], s.range[1], dur); drawEvents(evg, s.events || [], x, m, h, w, dur); };
     }
 
@@ -735,6 +816,15 @@
       if (brk <= end) svg.append('line').attr('class', 'syr-break').attr('x1', x(brk)).attr('x2', x(brk)).attr('y1', m.t).attr('y2', h - m.b);
       axisYears(svg, x, m, h, w);
       const evg = svg.append('g');
+      const deBy = new Map(de.map((r) => [r.m, r])), euBy = new Map(eu.map((r) => [r.m, r]));
+      tipTime(svg, x, m, w, h, (t) => {
+        const k = ym(t), a = deBy.get(k), b = euBy.get(k);
+        if (!a && !b) return null;
+        return { html: ttHtml(mName(k) + sexWord(), 'First-time asylum applicants, Syrian citizens',
+          [a ? ttRow('syr-ln syr-ln--de', 'Germany', num(a.v)) : '', b ? ttRow('syr-ln', 'EU total', num(b.v)) : ''],
+          k >= '2026-07' ? 'After the change of definition in July 2026.' : ''),
+          ys: [...(b ? [[y(b.v)]] : []), ...(a ? [[y(a.v), 'syr-hdot--de']] : [])] };
+      });
       return (s, dur) => { setBand(rect, x, s.range[0], s.range[1], dur); drawEvents(evg, s.events || [], x, m, h, w, dur); };
     }
 
@@ -745,6 +835,7 @@
       const x = d3.scaleLinear([0, d3.max(AB, (r) => r.v)], [m.l, w - m.r]);
       const yb = d3.scaleBand(d3.range(N), [m.t, h - m.b]).padding(0.3);
       const g = svg.append('g');
+      let year = null, yearTot = 0;
       const rowsFor = (yr) => {
         const ys = AB.filter((r) => r.y === yr).sort((a, b) => b.v - a.v);
         const keep = ys.slice(0, N - 1);
@@ -753,17 +844,21 @@
         return [...keep.sort((a, b) => b.v - a.v).map((r) => ({ key: r.h, name: r.n, v: r.v, cls: r.h === 'DEU' ? 'de' : r.nb ? 'nb' : 'other' })),
           { key: 'OTHER', name: 'All others', v: rest, cls: 'other' }];
       };
+      tipOn(g, (e) => { const gg = e.target.closest('g.syr-hb'), d = gg && d3.select(gg).datum(); return d && [ttHtml(`End of ${year}`,
+        d.key === 'OTHER' ? 'All other countries' : esc(d.name), [ttRow('', 'People from Syria counted as refugees', num(d.v)), ttRow('', 'Share of all countries', pct(d.v, yearTot))]), null]; });
       return (s, dur) => {
         const rows = rowsFor(s.year);
+        year = s.year; yearTot = d3.sum(rows, (r) => r.v);
         const sel = g.selectAll('g.syr-hb').data(rows, (d) => d.key);
         const en = sel.enter().append('g').attr('class', 'syr-hb').attr('transform', (d, i) => `translate(0,${yb(i)})`).attr('opacity', 0);
+        en.append('rect').attr('class', 'overlay').attr('x', 0).attr('width', w).attr('y', -(yb.step() - yb.bandwidth()) / 2).attr('height', yb.step());   // the whole row
         en.append('rect').attr('x', m.l).attr('height', yb.bandwidth()).attr('width', 0);
         en.append('text').attr('class', 'syr-name').attr('x', m.l - 8).attr('text-anchor', 'end');
         en.append('text').attr('class', 'syr-val');
         sel.exit().transition().duration(dur).attr('opacity', 0).remove();
         const all = en.merge(sel);
         all.transition().duration(dur).attr('opacity', 1).attr('transform', (d, i) => `translate(0,${yb(i)})`);
-        all.select('rect').attr('class', (d) => `syr-bar syr-bar--${d.cls}`).transition().duration(dur)
+        all.select('rect:not(.overlay)').attr('class', (d) => `syr-bar syr-bar--${d.cls}`).transition().duration(dur)
           .attr('height', yb.bandwidth()).attr('width', (d) => Math.max(0, x(d.v) - m.l));
         all.select('.syr-name').attr('y', yb.bandwidth() / 2 + 4).text((d) => d.name);
         all.select('.syr-val').attr('y', yb.bandwidth() / 2 + 4).text((d) => num(d.v))
@@ -800,6 +895,13 @@
       const counts = svg.append('g').selectAll('text').data(DEC).join('text').attr('class', 'syr-count')
         .attr('x', (r) => xs(r.y) + xs.bandwidth() / 2).attr('y', m.t - 6);
       const focus = focusBar(svg, xs, m, h);
+      const ring = svg.append('rect').attr('class', 'focus-ring').style('display', 'none');
+      const OUT = [['rs', 'syr-o1', 'Refugee status'], ['sp', 'syr-o2', 'Subsidiary protection'], ['hs', 'syr-o3', 'Humanitarian status'], ['neg', 'syr-o4', 'Rejected']];
+      tipOn(svg.append('g').selectAll('rect').data(DEC).join('rect').attr('class', 'overlay')
+        .attr('x', (r) => xs(r.y) - (xs.step() - xs.bandwidth()) / 2).attr('width', xs.step()).attr('y', m.t - 18).attr('height', h - m.b - m.t + 18),
+      (e, r) => [ttHtml(`${r.y}${sexWord()}`, 'First-instance decisions, Germany',
+        [...OUT.map(([k, cls, lab]) => ttRow(`syr-sw ${cls}`, lab, `${num(r[k])} · ${pct(r[k], r.s)}`)), ttRow('', 'All decisions', num(r.t))]), r],
+      (r) => { ring.style('display', r ? null : 'none'); if (r) ring.attr('x', xs(r.y) - 1.5).attr('width', xs.bandwidth() + 3).attr('y', m.t - 1.5).attr('height', h - m.b - m.t + 3); });
       return (s) => {
         const on = (r) => r.y >= s.range[0] && r.y <= s.range[1];
         focus(on, DEC);
@@ -850,6 +952,13 @@
       // a ring is drawn only where it fits whole inside the map; the countries left out are named in the note
       const fits = (c, rr) => c && c[0] - rr > 1 && c[0] + rr < w - 1 && c[1] - rr > 1 && c[1] + rr < h - 1;
       const rings = g.append('g'), dots = g.append('g'), lab = g.append('g');
+      let year = null;
+      const hov = g.append('circle').attr('class', 'focus-ring').style('display', 'none');
+      const markC = (c) => { hov.style('display', c ? null : 'none'); if (c) hov.attr('cx', c[0]).attr('cy', c[1]).attr('r', c[2] + 1.5); };
+      tipOn(dots, (e) => { const c = d3.select(e.target).datum(); return c && [ttHtml(String(year), esc(c.lab),
+        [ttRow('syr-sw syr-sw--det', 'Detections of Syrian citizens', num(c.v))], `Frontex, ${c.b === 'Sea' ? 'sea' : 'land'} border. Detections, not people.`), [c.xy[0], c.xy[1], Math.max(2, rDet(c.v))]]; }, markC);
+      tipOn(rings, (e) => { const a = d3.select(e.target).datum(); return a && [ttHtml(String(year), esc(a.n),
+        [ttRow(a.g === 'DE' ? 'syr-sw syr-sw--ringde' : 'syr-sw syr-sw--ring', 'First-time asylum applicants', num(a.v))], 'Eurostat. Applicants with Syrian citizenship.'), [...centre.get(a.g), rApp(a.v)]]; }, markC);
       // size keys in the map's lower left corner, one per unit: nested circles, the values beside them
       const keyG = svg.append('g');
       let kx = 8;
@@ -876,6 +985,7 @@
         const secs = SECTIONS.map((c) => ({ ...c, v: secY(c, s.year), xy: proj(c.at) })).filter((c) => c.v > 0).sort((a, b) => b.v - a.v);
         dots.selectAll('circle').data(secs, (c) => c.r + c.b).join('circle').attr('class', 'syr-det')
           .attr('cx', (c) => c.xy[0]).attr('cy', (c) => c.xy[1]).attr('r', (c) => Math.max(2, rDet(c.v)));
+        year = s.year;
         // labels: the three countries the text names and the largest sections; never over each other or over a disc
         lab.selectAll('*').remove();
         const placed = [];
@@ -940,6 +1050,14 @@
         wb.attr('d', line(vis(S.WB)));
         cm.attr('d', line(vis(S.CM)));
       };
+      tipTime(svg, x, m, w, h, (t) => {
+        const k = ym(t), i = rtMonths.indexOf(k);
+        if (i < 0 || t < x.domain()[0]) return null;
+        const [a, b, c] = [S.EM[i], S.WB[i], S.CM[i]];
+        return { html: ttHtml(mName(k), 'Detections of Syrian citizens', [ttRow('syr-sw syr-sw--em', 'Eastern Mediterranean', num(a.v)),
+          ttRow('syr-ln syr-ln--wb', 'Western Balkans', num(b.v)), ttRow('syr-ln syr-ln--cm', 'Central Mediterranean', num(c.v))], 'Frontex. Detections, not people.'),
+          ys: [[y(a.v)], [y(b.v)], [y(c.v)]] };
+      });
       let zoomed = null;
       return (s, dur) => {
         const z = !!s.zoom;
@@ -981,6 +1099,16 @@
       }
       axisYears(svg, x, m, h, w);
       const val = svg.append('text').attr('class', 'syr-label syr-label--strong').attr('text-anchor', 'end');
+      const byM = new Map(wkOf(SEX).map((r) => [r.m, r]));
+      tipTime(svg, x, m, w, h, (t) => {
+        const r = byM.get(ym(t));
+        if (!r || (r[key] == null && (!line || r[line] == null))) return null;
+        const rows = key === 'e'
+          ? [ttRow(r.ee ? 'syr-sw syr-sw--est' : 'syr-sw syr-sw--tot', 'In a job subject to social security', num(r.e))]
+          : [r.b != null ? ttRow('syr-sw syr-sw--sup', 'Basic income support, able to work', num(r.b)) : '', r.u != null ? ttRow('syr-ln', 'Registered unemployed', num(r.u)) : ''];
+        return { html: ttHtml(mName(r.m) + sexWord(), 'Syrian citizens', rows, r[est] ? 'Estimate of the agency.' : ''),
+          ys: [...(r[key] != null ? [[y(r[key])]] : []), ...(line && r[line] != null ? [[y(r[line])]] : [])] };
+      });
       return (s, dur) => {
         setBand(rect, x, s.range[0] < d3.timeFormat('%Y-%m')(rowsT[0].t) ? d3.timeFormat('%Y-%m')(rowsT[0].t) : s.range[0], s.range[1], dur);
         const last = rows.filter((r) => r.m <= s.range[1]).pop();
@@ -1004,12 +1132,22 @@
         if (l) svg.append('text').attr('class', 'syr-label').attr('x', x(l.t) + 4).attr('y', y(l.er) + 4).text(`${Math.round(l.er)}%`);
       });
       axisYears(svg, x, m, h, w);
+      const f1 = d3.format('.1f');
+      tipTime(svg, x, m, w, h, (t) => {
+        const k = ym(t), at = (g) => WR.find((r) => r.g === g && r.m === k && r.er != null);
+        const sy = at('SY'), fo = at('FOREIGN'), de = at('GERMAN');
+        if (!sy && !fo && !de) return null;
+        return { html: ttHtml(mName(k), 'Employment rate', [sy ? ttRow('syr-ln', 'Syrian citizens', `${f1(sy.er)}%`) : '',
+          fo ? ttRow('syr-ln syr-ln--cm', 'All foreign citizens', `${f1(fo.er)}%`) : '', de ? ttRow('syr-ln syr-ln--wb', 'German citizens', `${f1(de.er)}%`) : ''],
+          (sy || fo || de).p ? 'Provisional.' : ''),
+          ys: [sy, fo, de].filter(Boolean).map((r) => [y(r.er)]) };
+      }, false);
       return (s, dur) => setBand(rect, x, s.range[0], s.range[1], dur);
     }
 
     // columns per year: one series, several side by side, or stacked; the years in focus at full strength, the
     // value of the last year in focus above its column
-    function drawCols(svg, w, h, rows, series, stacked = false, yMax = null, labelOf = null) {
+    function drawCols(svg, w, h, rows, series, stacked = false, yMax = null, labelOf = null, what = '', totalName = 'Total') {
       const total = (r) => (stacked ? d3.sum(series, ([k]) => r[k] || 0) : d3.max(series, ([k]) => r[k] || 0));
       const y = d3.scaleLinear([0, yMax || d3.max(rows, total)], [0, 1]).nice(4);
       const m = { t: 22, r: 8, b: 26, l: 14 + 6.8 * d3.max(y.ticks(4), (v) => num(v).length) };   // room for the longest axis value
@@ -1042,6 +1180,14 @@
       const cx = (r) => (stacked || !inner ? xs(r.y) + xs.bandwidth() / 2 : xs(r.y) + inner(series[0][0]) + inner.bandwidth() / 2);
       const crowded = xs.step() < 26;
       const focus = focusBar(svg, xs, m, h);
+      // the tooltip: each series of the column and, where the column adds up, its total
+      const ring = svg.append('rect').attr('class', 'focus-ring').style('display', 'none');
+      tipOn(svg.append('g').selectAll('rect').data(rows).join('rect').attr('class', 'overlay')
+        .attr('x', (r) => xs(r.y) - (xs.step() - xs.bandwidth()) / 2).attr('width', xs.step()).attr('y', m.t - 18).attr('height', h - m.b - m.t + 18),
+      (e, r) => [ttHtml(`${/^\d{4}-\d{2}$/.test(r.y) ? mName(r.y) : r.lab || r.y}${sexWord()}`, what, r.gap ? [] : [...series.map(([k, cls, name]) => ttRow(`syr-sw ${cls}`, name, num(r[k] || 0))),
+        ...(stacked || labelOf ? [ttRow('', totalName, num(shown(r)))] : [])], r.gap ? 'No figures for this month.' : ''), r],
+      (r) => { ring.style('display', r ? null : 'none');
+        if (r) { const top = r.gap ? m.t : y(total(r)); ring.attr('x', xs(r.y) - 1.5).attr('width', xs.bandwidth() + 3).attr('y', top - 1.5).attr('height', Math.max(0, y(0) - top) + 3); } });
       return (s) => {
         const on = (r) => !s.range || (r.y >= s.range[0] && r.y <= s.range[1]);
         const last = rows.filter((r) => on(r) && !r.gap).pop();
@@ -1070,13 +1216,18 @@
       const x = d3.scaleLinear([0, d3.max(STAY_T, (r) => r.v)], [m.l, w - m.r]);   // the scale of All
       const yb = d3.scaleBand(STAY.map((r) => r.key), [m.t, h - m.b]).padding(0.3);
       const g = svg.append('g');
+      const tot = d3.sum(STAY, (r) => r.v);
       STAY.forEach((r) => {
         const yy = yb(r.key), mid = yy + yb.bandwidth() / 2;
-        g.append('rect').attr('class', 'syr-bar syr-tot').attr('x', m.l).attr('y', yy).attr('height', yb.bandwidth()).attr('width', Math.max(0, x(r.v) - m.l));
-        g.append('text').attr('class', 'syr-name').attr('x', m.l - 8).attr('y', mid - 2).attr('text-anchor', 'end').text(r.name);
-        g.append('text').attr('class', 'syr-label').attr('x', m.l - 8).attr('y', mid + 12).attr('text-anchor', 'end').style('fill', 'var(--muted)').text(r.years);
-        g.append('text').attr('class', 'syr-val').attr('x', x(r.v) + 6).attr('y', mid + 4).text(num(r.v));
+        const gg = g.append('g').datum(r);
+        gg.append('rect').attr('class', 'overlay').attr('x', 0).attr('width', w).attr('y', yy - (yb.step() - yb.bandwidth()) / 2).attr('height', yb.step());   // the whole row
+        gg.append('rect').attr('class', 'syr-bar syr-tot').attr('x', m.l).attr('y', yy).attr('height', yb.bandwidth()).attr('width', Math.max(0, x(r.v) - m.l));
+        gg.append('text').attr('class', 'syr-name').attr('x', m.l - 8).attr('y', mid - 2).attr('text-anchor', 'end').text(r.name);
+        gg.append('text').attr('class', 'syr-label').attr('x', m.l - 8).attr('y', mid + 12).attr('text-anchor', 'end').style('fill', 'var(--muted)').text(r.years);
+        gg.append('text').attr('class', 'syr-val').attr('x', x(r.v) + 6).attr('y', mid + 4).text(num(r.v));
       });
+      tipOn(g.selectAll('g'), (e, r) => [ttHtml(`End of ${stayYear}${sexWord()}`, `In Germany ${r.name}`,
+        [ttRow('syr-sw syr-sw--tot', 'Syrian protection seekers', num(r.v)), ttRow('', 'Share of all', pct(r.v, tot))], `First entry ${r.b >= 99 ? r.years : `in ${r.years}`}, read from the length of stay.`), null]);
       return () => {};
     }
 
@@ -1110,6 +1261,20 @@
         .sort((a, b) => b.v - a.v);
       const circles = svg.append('g').selectAll('circle').data(dots).join('circle').attr('class', 'syr-dot')
         .attr('cx', (d) => d.c[0]).attr('cy', (d) => d.c[1]).attr('r', (d) => r(d.v));
+      // the tooltip: the circle under the pointer (the smallest where circles overlap, as drawn), or one within 6px
+      const hov = svg.append('circle').attr('class', 'focus-ring').style('display', 'none');
+      const ctyTotSx = d3.sum(dots, (d) => d.v);
+      tipOn(svg.append('rect').attr('class', 'overlay').attr('width', w).attr('height', h), (e) => {
+        const [px, py] = d3.pointer(e, svg.node());
+        let best = null, score = Infinity;
+        dots.forEach((d) => {
+          const dist = Math.hypot(d.c[0] - px, d.c[1] - py), rr = r(d.v);
+          const sc = dist <= rr ? rr - 1000 : dist - rr;
+          if (sc < score && (dist <= rr || dist - rr <= 6)) { score = sc; best = d; }
+        });
+        return best && [ttHtml(`End of ${ctyYear}${sexWord()}`, esc(best.n), [ttRow('syr-sw syr-sw--dot', 'Syrian protection seekers', num(best.v)),
+          ttRow('', 'Share of Germany', pct1(best.v, ctyTotSx))], best.unit ? `Counted together: ${UNIT_NOTE[best.k]}.` : ''), best];
+      }, (d) => { hov.style('display', d ? null : 'none'); if (d) hov.attr('cx', d.c[0]).attr('cy', d.c[1]).attr('r', r(d.v) + 1.5); });
       // the size key in the legend row, drawn with this scale
       mapKey = [1000, 10000, 30000].filter((v) => v <= ctyRank[0].v).map((v) => [v, r(v)]);
       const lab = svg.append('g');
