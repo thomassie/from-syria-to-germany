@@ -1,0 +1,401 @@
+/* Europe's Divides, From Syria to Germany: styles, all scoped under .syr so they cannot touch the host
+   page. The base (layout, type, switches, tooltip, table, footer) is the same as the other pages'; colours come from
+   the host's tokens (--paper, --ink, --muted, --rule, --red, --blue, --link), so the page follows the host's light
+   and dark themes; theme.css defines them for the standalone page. Layout reacts to the width of its own container,
+   not the screen. One meaning per colour: ink = totals of people and the EU total, blue = Germany, red = events,
+   grey = deaths and everything else. Red and blue are for marks and large text only, never body text. */
+.syr { container: syr / inline-size; position: relative; color: var(--ink); }
+/* Embedded (default): the host page provides width and side gutters. */
+.syr:not(.syr--standalone) .wrap { max-width: none; margin-inline: 0; padding-left: 0; padding-right: 0; }
+.syr:not(.syr--standalone) .masthead { padding-top: 0; }
+/* Shield from the host's global element styles (zero-specificity :where, so every rule below still wins). */
+.syr :where(h1, h2, h3, h4, p, ul, ol, li, dl, dt, dd, figure, blockquote, table, th, td, summary, label, select, button, span, b, em, small) {
+  color: inherit; font-family: inherit; letter-spacing: normal; text-transform: none; text-shadow: none; }
+.syr :where(a) { color: var(--link); text-decoration: underline; text-decoration-style: solid; }
+
+/* Layout: soft Bauhaus. An asymmetric two-column grid: a narrow rail carries each section's
+   heading and explanation, a wide field carries the chart. One column under 760px.
+   Colours come only from theme.css tokens. Type follows the main website: Helvetica/Arial for
+   headings, reading text and italic quotations; Google Sans Code for navigation and supporting
+   information (labels, axes, notes, figures in tables). */
+.syr {
+  --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-support: "Google Sans Code", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --on-yellow: #2D3238;          /* text on the yellow fill, same in both themes */
+  --radius: 0;
+  --gap: clamp(1.5rem, 4vw, 3rem);
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.3125rem;
+  --step-2: clamp(1.5rem, 3vw, 1.875rem);
+  --step-3: clamp(2.5rem, 7vw, 4.5rem);
+  --hero: clamp(4rem, 14vw, 8.5rem);
+  --max: 1160px;
+}
+.syr *, .syr *::before, .syr *::after { box-sizing: border-box; }
+.syr [hidden] { display: none !important; }
+.syr {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.syr .wrap {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.syr h1, .syr h2, .syr h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; margin: 0; text-wrap: balance; }
+.syr p { margin: 0; }
+.syr a { text-underline-offset: 0.18em; }
+.syr em, .syr q, .syr blockquote { font-family: var(--font-body); font-style: italic; }
+.syr blockquote { margin: 0; padding-left: 1.25rem; border-left: 3px solid var(--yellow); font-size: var(--step-1); line-height: 1.45; }
+.syr .eyebrow {
+  font-family: var(--font-support);
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* Title full stop: a drawn circle (Helvetica's full stop is square). Sits on the baseline. */
+/* An inline graphic, not an empty box: every engine puts its bottom edge on the text baseline. */
+.syr .title-dot { display: inline-block; width: 0.15em; height: 0.15em; margin: 0 0 0 0.06em; padding: 0; vertical-align: baseline; overflow: visible; }
+.syr .title-dot circle { fill: var(--red); }
+/* ---------- Masthead ---------- */
+.syr .masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--gap);
+  align-items: end;
+  padding-block: clamp(2.5rem, 7vw, 5rem) 0;
+}
+.syr .masthead__text { display: grid; gap: 1.25rem; max-width: 46rem; min-width: 0; }
+.syr .masthead h1 { font-size: var(--step-3); letter-spacing: -0.02em; }
+.syr .lede { font-size: var(--step-1); line-height: 1.45; max-width: 38rem; }
+
+/* ---------- Sections ---------- */
+.syr .block {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--gap);
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  border-bottom: 1px solid var(--rule);
+}
+.syr .block__rail { display: grid; gap: 0.875rem; align-content: start; min-width: 0; }
+.syr .block__rail h2 { font-size: var(--step-2); }
+.syr .block__rail p { color: var(--muted); max-width: 26rem; }
+.syr .block__body { display: grid; gap: 1.25rem; min-width: 0; align-content: start; }
+.syr .note { font-family: var(--font-support); font-size: var(--step--1); color: var(--muted); }
+/* ---------- Charts ---------- */
+.syr .chart { position: relative; width: 100%; min-width: 0; }
+.syr .chart svg { display: block; overflow: visible; }
+.syr .chart text { font-family: var(--font-support); font-size: 11.5px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.syr .chart .grid line { stroke: var(--rule); stroke-width: 1; shape-rendering: crispEdges; }
+.syr .chart .grid line.mid { stroke: var(--muted); stroke-opacity: 0.55; }
+
+.syr .chart .axis-title { font-family: var(--font-support); font-size: 12px; fill: var(--ink); }
+
+.syr .focus-ring { fill: none; stroke: var(--ink); stroke-width: 2px; pointer-events: none; }
+.syr .overlay { fill: transparent; }
+.syr .overlay:focus { outline: none; }
+.syr .overlay:focus-visible { stroke: var(--link); stroke-width: 2px; }
+.syr .tooltip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  width: max-content;
+  max-width: min(18rem, calc(100% - 8px));
+  padding: 0.75rem 0.875rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.12);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.syr .tooltip[hidden] { display: none; }
+.syr .tt__meta { font-family: var(--font-support); font-size: 0.75rem; color: var(--muted); }
+.syr .tt__title { font-weight: 500; margin: 0.2rem 0 0.5rem; }
+.syr .tt__rows { display: grid; gap: 0.2rem; margin: 0; }
+.syr .tt__rows div { display: flex; justify-content: space-between; gap: 1rem; }
+.syr .tt__rows dt { font-family: var(--font-support); font-size: 0.8125rem; display: flex; align-items: center; gap: 0.45rem; color: var(--muted); }
+.syr .tt__rows dd { margin: 0; font-family: var(--font-support); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+
+/* ---------- Filters & legend ---------- */
+.syr .filters { display: grid; gap: 0.5rem; }
+/* Switches ("bar index"): plain labels on a thin rule, a thick ink bar under the selected one.
+   Ink and paper only, so they never borrow the charts' colours or shapes. The rule runs the full
+   width of the column: a background repeating every 44px (the buttons' fixed height), so each
+   wrapped row on a phone gets its own full-width rule too. The bars are inset shadows, so nothing
+   shifts when the selection moves (Google Sans Code keeps its width at weight 500). */
+.syr .seg {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  background: repeating-linear-gradient(to bottom, transparent 0 43px, var(--rule) 43px 44px);
+}
+.syr .seg button {
+  font: inherit;
+  font-family: var(--font-support);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 0.875rem;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.syr .seg button:hover { color: var(--ink); box-shadow: inset 0 -4px 0 var(--rule); }
+.syr .seg button[aria-pressed="true"] { color: var(--ink); font-weight: 500; box-shadow: inset 0 -4px 0 var(--ink); }
+.syr .seg button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+@media (forced-colors: active) {
+  .syr .seg { background: none; }
+  .syr .seg button { border-bottom: 1px solid CanvasText; box-shadow: none; }
+  .syr .seg button[aria-pressed="true"] { border-bottom-width: 4px; }
+}
+.syr .legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-family: var(--font-support); font-size: 0.875rem; }
+.syr .legend span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.syr .legend .count { font-family: var(--font-support); font-size: 0.8125rem; color: var(--muted); }
+.syr .summary { font-family: var(--font-support); font-size: 0.875rem; color: var(--muted); }
+.syr .summary strong { color: var(--ink); font-weight: 500; }
+/* ---------- Table view ---------- */
+.syr .tableview summary { font-family: var(--font-support); font-size: 0.9375rem; cursor: pointer; color: var(--link); width: max-content; max-width: 100%; }
+.syr .tableview summary:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 0; }
+.syr .tablewrap { overflow-x: auto; max-height: 28rem; overflow-y: auto; margin-top: 0.75rem; border: 1px solid var(--rule); border-radius: 0; }
+.syr table { border-collapse: collapse; width: 100%; font-size: 0.875rem; }
+.syr th, .syr td { text-align: left; padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.syr th { position: sticky; top: 0; background: var(--paper); font-family: var(--font-support); font-size: 0.8125rem; font-weight: 500; white-space: nowrap; }
+.syr td.num, .syr th.num { text-align: right; font-family: var(--font-support); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.syr td.date { font-family: var(--font-support); white-space: nowrap; }
+
+/* ---------- Footer ---------- */
+.syr .foot { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); padding-block: clamp(2.5rem, 6vw, 4rem); }
+.syr .foot h2 { font-size: var(--step-1); }
+.syr .foot ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; color: var(--muted); max-width: 44rem; }
+.syr .glossary { padding-bottom: 0; }
+.syr .glossary dl { margin: 0; display: grid; gap: 0.35rem 0; max-width: 44rem; }
+.syr .glossary dt { font-weight: 500; color: var(--ink); margin-top: 0.85rem; }
+.syr .glossary dt:first-child { margin-top: 0; }
+.syr .glossary dd { margin: 0; color: var(--muted); }
+.syr .glossary dd ul { margin: 0.4rem 0; }
+.syr .glossary b { font-weight: 500; color: var(--ink); }
+.syr .foot .credit { font-family: var(--font-support); margin-top: 1.25rem; font-size: var(--step--1); color: var(--muted); }
+.syr .error { padding: 1rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--red); }
+
+/* Hero: two figures side by side */
+.syr .hero {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  border-bottom: 1px solid var(--rule);
+}
+.syr .hero__switch { grid-column: 1 / -1; display: grid; gap: 0.4rem; min-width: 0; }
+.syr .hero__pov { font-family: var(--font-support); font-size: 0.8125rem; color: var(--muted); }
+.syr .hero__item { display: grid; gap: 0.6rem; align-content: start; min-width: 0; }
+.syr .hero__label { font-family: var(--font-support); font-size: 0.875rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+.syr .hero__figure { font-family: var(--font-body); font-weight: 500; font-size: clamp(3.25rem, 10vw, 6.5rem); line-height: 0.9; letter-spacing: -0.03em; }
+.syr .hero__figure small { font-size: 0.45em; letter-spacing: 0; margin-left: 0.04em; }
+.syr .hero__text { font-size: var(--step-1); line-height: 1.45; max-width: 28rem; }
+/* tooltip table: region next to its country */
+.syr .tooltip { max-width: min(20rem, calc(100% - 8px)); }
+.syr .tt__tab { border-collapse: collapse; width: 100%; font-family: var(--font-support); font-size: 0.8125rem; }
+.syr .tt__tab th, .syr .tt__tab td { padding: 0.12rem 0 0.12rem 0.9rem; border: 0; text-align: right; font-weight: 400; position: static; background: none; white-space: nowrap; }
+.syr .tt__tab th:first-child { padding-left: 0; text-align: left; color: var(--muted); white-space: normal; }
+.syr .tt__tab thead th { font-size: 0.75rem; color: var(--muted); padding-bottom: 0.25rem; max-width: 7rem; overflow: hidden; text-overflow: ellipsis; }
+.syr .tt__tab td { font-variant-numeric: tabular-nums; }
+.syr .tt__tab td + td { color: var(--muted); }
+.syr .tt__tab .tt__sub th, .syr .tt__tab .tt__sub td { font-size: 0.75rem; color: var(--muted); }
+.syr .tt__note { margin-top: 0.45rem; font-family: var(--font-support); font-size: 0.75rem; color: var(--muted); }
+@container syr (max-width: 760px) {
+  .syr .masthead { grid-template-columns: minmax(0, 1fr); }
+  .syr .block, .syr .foot { grid-template-columns: minmax(0, 1fr); }
+  .syr .seg button { padding: 0 0.6rem; }
+}
+@container syr (max-width: 520px) {
+  .syr .hero { grid-template-columns: minmax(0, 1fr); }
+}
+/* the wide region table scrolls inside its frame instead of widening the column */
+.syr .block__body > * { min-width: 0; }
+/* ---------- This page ---------- */
+/* One meaning per colour, as on Asking for Protection: ink = totals of people and the EU total; blue = Germany;
+   red = events (dated by an official record) and the years in focus; grey = deaths (never red) and everything else.
+   Every mark reaches 3:1 against the surface it sits on (paper, the focus band, the land), by its fill or by an
+   outline. */
+.syr { --on-mark: var(--paper); --sticky-top: 0px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .syr { --on-mark: var(--ink); } }
+:root[data-theme="dark"] .syr { --on-mark: var(--ink); }
+/* long source links (BKG's Datenquellen) break rather than widen the page */
+.syr .foot > div { min-width: 0; }
+.syr .foot a, .syr .note a { overflow-wrap: anywhere; }
+/* shield: a host's borders on table cells */
+.syr :where(table, thead, tbody, tr, th, td) { border: 0; }
+
+/* ---------- The story: text steps scroll past a fixed graphic ----------
+   Wide: steps in the site's narrow rail on the left, the graphic in the wide field on the right, held in view.
+   Narrow: the graphic is held at the top of the screen and the steps, as cards on paper, scroll over its lower part.
+   The graphic follows the step whose card has passed a line in the viewport (syr.js). */
+.syr .story { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); position: relative; }
+.syr .story__steps { grid-column: 1; grid-row: 1; min-width: 0; padding-bottom: 40vh; }
+.syr .story__graphic { grid-column: 2; grid-row: 1; position: sticky; top: var(--sticky-top); height: calc(100vh - var(--sticky-top));
+  display: grid; align-content: center; min-width: 0; }
+.syr .story__figure { display: grid; gap: 0.6rem; min-width: 0; }
+.syr .story__head { display: grid; gap: 0.25rem; }
+.syr .story__title { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); line-height: 1.25; }
+.syr .story__chart { position: relative; width: 100%; height: clamp(300px, 64vh, 560px); }
+.syr .story__chart svg { display: block; overflow: visible; }
+.syr .story__key { min-height: 1.4rem; }
+/* each step's description of the graphic, for screen readers (the held graphic itself is aria-hidden) */
+.syr .syr-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.syr .chapter { padding-top: 25vh; }
+.syr .chapter:first-child { padding-top: clamp(2.5rem, 6vw, 4.5rem); }
+.syr .chapter__head { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+.syr .chapter__num { font-family: var(--font-support); font-size: var(--step--1); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.syr .chapter h2 { font-size: var(--step-2); }
+.syr .chapter h3 { font-size: var(--step-1); margin-top: 18vh; }
+.syr .step { min-height: 78vh; display: grid; align-content: center; padding-block: 1.5rem; }
+.syr .step:first-of-type { min-height: 60vh; align-content: start; }
+.syr .step__text { display: grid; gap: 0.75rem; max-width: 26rem; color: var(--muted); transition: color 0.25s; }
+.syr .step.is-active .step__text { color: var(--ink); }
+.syr .step__text a { overflow-wrap: anywhere; }
+.syr .step__text .note { color: var(--muted); }
+.syr .step--prep .step__text { border-left: 3px solid var(--rule); padding-left: 1rem; }
+.syr .prep { font-family: var(--font-support); font-size: var(--step--1); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---------- Marks ---------- */
+.syr .chart .axis path, .syr .chart .axis line { stroke: var(--rule); }
+.syr .syr-band { fill: color-mix(in srgb, var(--muted) 13%, var(--paper)); }
+.syr .syr-dead { fill: color-mix(in srgb, var(--muted) 85%, var(--paper)); stroke: none; }
+/* preliminary months: the same grey, named by a bracket over them (syr.js) */
+.syr .syr-bracket { fill: none; stroke: var(--muted); stroke-width: 1px; }
+.syr .syr-line { fill: none; stroke: var(--ink); stroke-width: 1.5px; stroke-linejoin: round; }
+.syr .syr-line--de { stroke: var(--blue); stroke-width: 2px; }
+.syr .syr-area--de { fill: var(--blue); fill-opacity: 0.16; stroke: none; }
+.syr .syr-break { stroke: var(--muted); stroke-width: 1.25px; stroke-dasharray: 3 3; }
+.syr .syr-mk { stroke: var(--red); stroke-width: 2px; }
+.syr .syr-badge { fill: var(--red); stroke: none; }
+.syr .chart text.syr-badge__n { fill: var(--on-mark); font-size: 10px; font-weight: 700; text-anchor: middle; }
+.syr .chart text.syr-label { fill: var(--ink); font-size: 11.5px; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
+.syr .chart text.syr-label--strong { font-weight: 600; }
+.syr .chart text.syr-name { fill: var(--ink); font-size: 12px; }
+.syr .chart text.syr-val { fill: var(--ink); font-size: 12px; font-variant-numeric: tabular-nums; }
+.syr .chart text.syr-axis.is-on { fill: var(--ink); font-weight: 500; }
+/* Syrians abroad: neighbours of Syria in ink (a stock of people), Germany blue, the rest grey */
+.syr .syr-bar { stroke-width: 0.75px; }
+.syr .syr-bar--nb { fill: color-mix(in srgb, var(--ink) 58%, var(--paper)); stroke: var(--ink); }
+.syr .syr-bar--de { fill: var(--blue); stroke: var(--blue); }
+.syr .syr-bar--other { fill: color-mix(in srgb, var(--muted) 10%, var(--paper)); stroke: var(--muted); }
+/* people in Germany (Destatis): a total of people, in ink */
+.syr .syr-tot { fill: color-mix(in srgb, var(--ink) 70%, var(--paper)); stroke: none; }
+/* Employment Agency: the agency's estimates lighter with a dashed outline; basic income support a lighter ink (3:1);
+   a line over an area gets a paper halo so it stays apart from the area's edge */
+.syr .syr-est { fill: color-mix(in srgb, var(--ink) 30%, var(--paper)); stroke: var(--ink); stroke-width: 1px; stroke-dasharray: 2 2; }
+.syr .syr-sup { fill: color-mix(in srgb, var(--ink) 60%, var(--paper)); stroke: none; }
+.syr .syr-halo { fill: none; stroke: var(--paper); stroke-width: 4.5px; stroke-linejoin: round; }
+.syr .syr-sw--est { background: color-mix(in srgb, var(--ink) 30%, var(--paper)); outline: 1px dashed var(--ink); outline-offset: -1px; }
+.syr .syr-sw--sup { background: color-mix(in srgb, var(--ink) 60%, var(--paper)); }
+.syr .syr-sw--tot { background: color-mix(in srgb, var(--ink) 70%, var(--paper)); }
+.syr .syr-sw--dot { background: color-mix(in srgb, var(--ink) 70%, var(--paper)); border-radius: 50%; }
+/* decisions: the four outcomes in ink shades, rejected the empty part (as on Asking for Protection); the two light
+   shades are outlined so each reaches 3:1. Stacked columns are never dimmed (a dimmed shade would read as another
+   outcome): a red bar under the axis marks the years in focus. Single columns are dimmed outside the focus. */
+.syr .syr-o1 { fill: var(--ink); stroke: var(--paper); stroke-width: 0.5px; background: var(--ink); }
+.syr .syr-o2 { fill: color-mix(in srgb, var(--ink) 62%, var(--paper)); stroke: var(--paper); stroke-width: 0.5px; background: color-mix(in srgb, var(--ink) 62%, var(--paper)); }
+.syr .syr-o3 { fill: color-mix(in srgb, var(--ink) 28%, var(--paper)); stroke: var(--ink); stroke-width: 1px; background: color-mix(in srgb, var(--ink) 28%, var(--paper)); box-shadow: inset 0 0 0 1px var(--ink); }
+.syr .syr-o4 { fill: var(--paper); stroke: var(--muted); stroke-width: 1px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--muted); }
+.syr .syr-col { transition: opacity 0.3s; }
+.syr .syr-col.is-dim { opacity: 0.3; }
+.syr .syr-focus { fill: var(--red); }
+.syr .chart text.syr-count { fill: var(--muted); font-size: 10.5px; font-variant-numeric: tabular-nums; text-anchor: middle; }
+.syr .chart text.syr-count.is-on { fill: var(--ink); font-weight: 600; }
+/* months without figures: an empty dashed slot */
+.syr .syr-gap { fill: none; stroke: var(--muted); stroke-width: 1px; stroke-dasharray: 2 3; }
+.syr .syr-sw--gap { outline: 1px dashed var(--muted); outline-offset: -1px; }
+/* county map: land in a light grey, borders in rule and muted, one circle per county in ink (a total of people) */
+.syr .syr-land { fill: color-mix(in srgb, var(--muted) 9%, var(--paper)); stroke: none; fill-rule: evenodd; }
+.syr .syr-border { fill: none; stroke-linejoin: round; }
+.syr .syr-border--c { stroke: color-mix(in srgb, var(--muted) 28%, var(--paper)); stroke-width: 0.5px; }
+.syr .syr-border--s { stroke: color-mix(in srgb, var(--muted) 60%, var(--paper)); stroke-width: 0.9px; }
+.syr .syr-border--o { stroke: var(--muted); stroke-width: 0.9px; }
+.syr .syr-dot { fill: color-mix(in srgb, var(--ink) 80%, var(--paper)); fill-opacity: 0.82; stroke: var(--paper); stroke-width: 0.75px; }
+.syr .syr-dot.is-named { stroke: var(--ink); stroke-width: 1.4px; }
+.syr .syr-size { display: inline-block; vertical-align: middle; flex: none; overflow: visible; }
+/* Frontex detections (events, not people): grey. The eastern Mediterranean as an area, the other routes as lines */
+.syr .syr-route { fill: none; stroke-linejoin: round; }
+.syr .syr-route--em { fill: color-mix(in srgb, var(--muted) 40%, var(--paper)); stroke: color-mix(in srgb, var(--muted) 75%, var(--paper)); stroke-width: 1px; }
+.syr .syr-route--wb { stroke: var(--muted); stroke-width: 1.5px; stroke-dasharray: 4 2; }
+.syr .syr-route--cm { stroke: color-mix(in srgb, var(--muted) 85%, var(--paper)); stroke-width: 1.75px; }
+.syr .syr-sw--em { background: color-mix(in srgb, var(--muted) 40%, var(--paper)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--muted) 75%, var(--paper)); }
+/* the route map: countries in a light grey, Germany blue, Syria outlined; schematic routes dashed; Frontex
+   detections as grey discs (not people); first-time applications as rings, ink (Germany blue) */
+.syr .syr-cty { fill: color-mix(in srgb, var(--muted) 9%, var(--paper)); stroke: var(--paper); stroke-width: 0.6px; }
+.syr .syr-cty--de { fill: color-mix(in srgb, var(--blue) 18%, var(--paper)); }
+.syr .syr-cty--sy { fill: color-mix(in srgb, var(--muted) 22%, var(--paper)); stroke: var(--ink); stroke-width: 1.2px; }
+.syr .syr-path { fill: none; stroke: color-mix(in srgb, var(--muted) 85%, var(--paper)); stroke-width: 1.4px; stroke-dasharray: 5 3; stroke-linecap: round; }
+.syr .syr-det { fill: color-mix(in srgb, var(--muted) 90%, var(--paper)); fill-opacity: 0.9; stroke: var(--paper); stroke-width: 0.75px; }
+.syr .syr-ring { fill: none; stroke: var(--ink); stroke-width: 1.4px; }
+.syr .syr-ring--de { stroke: var(--blue); stroke-width: 2px; }
+.syr .syr-sw--det { background: color-mix(in srgb, var(--muted) 90%, var(--paper)); border-radius: 50%; }
+.syr .syr-size--det { fill: color-mix(in srgb, var(--muted) 90%, var(--paper)); stroke: none; }
+.syr .syr-size--ring { fill: none; stroke: var(--ink); stroke-width: 1.4px; }
+.syr .syr-sw--ring { border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.syr .syr-sw--ringde { border-radius: 50%; box-shadow: inset 0 0 0 2px var(--blue); }
+/* the All / Male / Female switch: compact; dimmed and inactive where a graphic has no breakdown by sex */
+.syr .story__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; }
+.syr .story__top .eyebrow { margin: 0; }
+.syr .syr-sex { width: auto; flex: none; background: repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px); }
+.syr .syr-sex button { height: 32px; padding: 0 0.6rem; font-size: 0.8125rem; }
+.syr .syr-sex.is-off { opacity: 0.35; pointer-events: none; }
+/* chapters in preparation */
+.syr .chart text.syr-prep { fill: var(--muted); font-size: 13px; text-anchor: middle; }
+.syr .syr-prepbox { fill: none; stroke: var(--rule); stroke-dasharray: 4 4; }
+
+/* legend swatches */
+.syr .syr-sw { display: inline-block; width: 12px; height: 12px; flex: none; }
+.syr .syr-sw--dead { background: color-mix(in srgb, var(--muted) 85%, var(--paper)); }
+.syr .syr-sw--nb { background: color-mix(in srgb, var(--ink) 58%, var(--paper)); box-shadow: inset 0 0 0 1px var(--ink); }
+.syr .syr-sw--de { background: var(--blue); width: 10px; height: 10px; margin: 1px; transform: rotate(45deg); }
+.syr .syr-sw--other { background: color-mix(in srgb, var(--muted) 10%, var(--paper)); box-shadow: inset 0 0 0 1px var(--muted); }
+.syr .syr-sw--ev { background: var(--red); border-radius: 50%; }
+.syr .syr-ln { display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--ink); }
+.syr .syr-ln--de { border-top-color: var(--blue); }
+.syr .syr-ln--wb { border-top: 2px dashed var(--muted); }
+.syr .syr-ln--path { border-top: 2px dashed color-mix(in srgb, var(--muted) 85%, var(--paper)); }
+.syr .syr-ln--cm { border-top-color: color-mix(in srgb, var(--muted) 85%, var(--paper)); }
+.syr .syr-ln--break { border-top: 1.5px dashed var(--muted); }
+
+/* ---------- Narrow: the graphic on top, cards scroll over its lower part ---------- */
+@container syr (max-width: 860px) {
+  .syr .story { display: block; }
+  .syr .story__graphic { position: sticky; top: var(--sticky-top); height: calc(100svh - var(--sticky-top)); align-content: start; z-index: 0;
+    padding-top: 0.75rem; background: var(--paper); }
+  .syr .story__chart { height: 46svh; min-height: 260px; }
+  .syr .story__steps { position: relative; z-index: 1; margin-top: calc(var(--sticky-top) - 100svh); padding-bottom: 50svh;
+    pointer-events: none; }   /* taps between the cards reach the graphic (the switch) */
+  .syr .step__text, .syr .chapter__head, .syr .chapter h3 { pointer-events: auto; }
+  .syr .chapter, .syr .chapter:first-child { padding-top: 0; }
+  /* headings are cards too, so they slide over the graphic like the steps */
+  .syr .chapter__head, .syr .chapter h3 { margin: 70svh 0 0; padding: 0.9rem 1.1rem; background: var(--paper); border: 1px solid var(--rule);
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.08); }
+  .syr .chapter h3 { font-size: var(--step-1); }
+  .syr .step, .syr .step:first-of-type { min-height: 92svh; align-content: end; padding-bottom: 6svh; }
+  .syr .step__text { max-width: none; padding: 1rem 1.1rem; background: var(--paper); border: 1px solid var(--rule); color: var(--ink);
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.08); }
+  .syr .step--prep .step__text { border-left: 3px solid var(--rule); padding-left: 1.1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .syr .step__text, .syr .syr-col { transition: none; }
+}

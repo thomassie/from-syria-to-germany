@@ -1,0 +1,18 @@
+[
+	{"src":"BA","i":"Migrationsmonitor","upd":null,"fetched":"2026-11-17 10:23","thru":"2026-10","url":"https://statistik.arbeitsagentur.de/SiteGlobals/Forms/Suche/Einzelheftsuche/Einzelheftsuche_Formular.html?nn=23088&topic_f=migrationsmonitor"},
+	{"src":"Destatis","i":"12511-0002","upd":null,"fetched":"2026-11-16 09:56","thru":"2025","url":"https://genesis.destatis.de/datenbank/online/statistic/12511/table/12511-0002"},
+	{"src":"Destatis","i":"12521-0009","upd":null,"fetched":"2026-11-16 09:56","thru":"2025","url":"https://genesis.destatis.de/datenbank/online/statistic/12521/table/12521-0009"},
+	{"src":"Destatis","i":"12521-0011","upd":null,"fetched":"2026-11-16 09:56","thru":"2025","url":"https://genesis.destatis.de/datenbank/online/statistic/12521/table/12521-0011"},
+	{"src":"Destatis","i":"12531-0006","upd":null,"fetched":"2026-11-16 09:56","thru":"2025-12-31","url":"https://genesis.destatis.de/datenbank/online/statistic/12531/table/12531-0006"},
+	{"src":"Destatis","i":"12531-0008","upd":null,"fetched":"2026-11-16 09:56","thru":"2025-12-31","url":"https://genesis.destatis.de/datenbank/online/statistic/12531/table/12531-0008"},
+	{"src":"Destatis","i":"12531-0043","upd":null,"fetched":"2026-11-16 09:58","thru":"2025-12-31","url":"https://genesis.destatis.de/datenbank/online/statistic/12531/table/12531-0043"},
+	{"src":"Destatis","i":"12711-0007","upd":null,"fetched":"2026-11-16 09:56","thru":"2025","url":"https://genesis.destatis.de/datenbank/online/statistic/12711/table/12711-0007"},
+	{"src":"Destatis","i":"12711-0008","upd":null,"fetched":"2026-11-17 10:20","thru":"2025","url":"https://genesis.destatis.de/datenbank/online/statistic/12711/table/12711-0008"},
+	{"src":"Eurostat","i":"migr_asyappctza","upd":"2026-09-03","fetched":"2026-11-10 18:40","thru":"2025","url":"https://ec.europa.eu/eurostat/databrowser/view/migr_asyappctza/default/table"},
+	{"src":"Eurostat","i":"migr_asyappctzm","upd":"2026-11-17","fetched":"2026-11-17 10:15","thru":"2026-08-01","url":"https://ec.europa.eu/eurostat/databrowser/view/migr_asyappctzm/default/table"},
+	{"src":"Eurostat","i":"migr_asydcfstq","upd":"2026-11-17","fetched":"2026-11-17 10:18","thru":"2025","url":"https://ec.europa.eu/eurostat/databrowser/view/migr_asydcfstq/default/table"},
+	{"src":"Frontex","i":"EUROSUR data as of 04NOV26","upd":"2026-11-04","fetched":"2026-11-16 09:58","thru":"2026-09","url":"https://www.frontex.europa.eu/assets/Migratory_routes/2026/EUROSUR_data_as_of_04NOV26.xlsx"},
+	{"src":"UCDP","i":"candidate 26.01.26.09","upd":null,"fetched":"2026-11-12 10:00","thru":"2026-09","url":"https://ucdp.uu.se/downloads/candidateged/GEDEvent_v26_01_26_09.csv"},
+	{"src":"UCDP","i":"ged 26.1","upd":null,"fetched":"2026-11-12 10:00","thru":"2025-12","url":"https://ucdp.uu.se/downloads/ged/ged261-csv.zip"},
+	{"src":"UNHCR","i":"Refugee Population Statistics Database","upd":null,"fetched":"2026-11-12 10:00","thru":"2025","url":"https://www.unhcr.org/refugee-statistics/"}
+]
