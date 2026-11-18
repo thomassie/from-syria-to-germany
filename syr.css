@@ -246,16 +246,18 @@
 /* ---------- The story: text steps scroll past a fixed graphic ----------
    Wide: steps in the site's narrow rail on the left, the graphic in the wide field on the right, held in view.
    Narrow: the graphic is held at the top of the screen and the steps, as cards on paper, scroll over its lower part.
-   The graphic follows the step whose card has passed a line in the viewport (syr.js). */
+   The graphic follows the step whose card has passed a line in the viewport (syr.js).
+   Wide: the held graphic fits the screen below a fixed host header (--sticky-top): head, key and note take what
+   they need and the chart takes the height left (at most 560px), so no scene runs below the screen's edge. */
 .syr .story { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); position: relative; }
 .syr .story__steps { grid-column: 1; grid-row: 1; min-width: 0; padding-bottom: 40vh; }
 .syr .story__graphic { grid-column: 2; grid-row: 1; position: sticky; top: var(--sticky-top); height: calc(100vh - var(--sticky-top));
-  display: grid; align-content: center; min-width: 0; }
-.syr .story__figure { display: grid; gap: 0.6rem; min-width: 0; }
+  display: flex; flex-direction: column; padding-block: 0.75rem; min-width: 0; }
+.syr .story__figure { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 0.6rem; min-width: 0; }
 .syr .story__head { display: grid; gap: 0.25rem; }
 .syr .story__title { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); line-height: 1.25; }
-.syr .story__chart { position: relative; width: 100%; height: clamp(300px, 64vh, 560px); }
-.syr .story__chart svg { display: block; overflow: visible; }
+.syr .story__chart { position: relative; width: 100%; flex: 1 1 0; min-height: 220px; max-height: 560px; }
+.syr .story__chart svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }   /* drawn to the box, never sizing it */
 .syr .story__key { min-height: 1.4rem; }
 /* each step's description of the graphic, for screen readers (the held graphic itself is aria-hidden) */
 .syr .syr-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
@@ -338,6 +340,9 @@
 .syr .syr-route--em { fill: color-mix(in srgb, var(--muted) 40%, var(--paper)); stroke: color-mix(in srgb, var(--muted) 75%, var(--paper)); stroke-width: 1px; }
 .syr .syr-route--wb { stroke: var(--muted); stroke-width: 1.5px; stroke-dasharray: 4 2; }
 .syr .syr-route--cm { stroke: color-mix(in srgb, var(--muted) 85%, var(--paper)); stroke-width: 1.75px; }
+/* a route the step is about: in ink and wider, in the line and in its key */
+.syr .syr-route--wb.is-focus { stroke: var(--ink); stroke-width: 2.5px; }
+.syr .syr-ln--wb.is-focus { border-top: 2.5px dashed var(--ink); }
 .syr .syr-sw--em { background: color-mix(in srgb, var(--muted) 40%, var(--paper)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--muted) 75%, var(--paper)); }
 /* the route map: countries in a light grey, Germany blue, Syria outlined; schematic routes dashed; Frontex
    detections as grey discs (not people); first-time applications as rings, ink (Germany blue) */
@@ -380,12 +385,16 @@
 /* ---------- Narrow: the graphic on top, cards scroll over its lower part ---------- */
 @container syr (max-width: 860px) {
   .syr .story { display: block; }
-  .syr .story__graphic { position: sticky; top: var(--sticky-top); height: calc(100svh - var(--sticky-top)); align-content: start; z-index: 0;
-    padding-top: 0.75rem; background: var(--paper); }
-  .syr .story__chart { height: 46svh; min-height: 260px; }
+  .syr .story__graphic { position: sticky; top: var(--sticky-top); height: calc(100svh - var(--sticky-top)); z-index: 0;
+    padding-block: 0.75rem 0.5rem; background: var(--paper); }
+  .syr .story__figure { justify-content: flex-start; }
+  /* the chart up to 46% of the screen, less where a long note would otherwise run below it */
+  .syr .story__chart { max-height: 46svh; min-height: 200px; }
   .syr .story__steps { position: relative; z-index: 1; margin-top: calc(var(--sticky-top) - 100svh); padding-bottom: 50svh;
     pointer-events: none; }   /* taps between the cards reach the graphic (the switch) */
   .syr .step__text, .syr .chapter__head, .syr .chapter h3 { pointer-events: auto; }
+  /* the cards pass under the graphic's head (kicker, switch, title, key): syr.js clips each card at the key's lower
+     edge, so the switch stays visible and can be tapped */
   .syr .chapter, .syr .chapter:first-child { padding-top: 0; }
   /* headings are cards too, so they slide over the graphic like the steps */
   .syr .chapter__head, .syr .chapter h3 { margin: 70svh 0 0; padding: 0.9rem 1.1rem; background: var(--paper); border: 1px solid var(--rule);

@@ -360,7 +360,7 @@
         { scene: 'routes', range: ['2015-01', '2015-12'], events: [],
           text: `<p>In 2015, ${num(rtY('EM', 2015))} detections of Syrian citizens on the eastern Mediterranean route, ${num(rtY('EM', 2015, 's', 'Sea'))} of them at sea. The highest month is ${mName(emPeak.m)}, with ${num(emPeak.v)}. Syrian citizens make up ${pct(rtY('EM', 2015), rtY('EM', 2015, 'a'))} of all detections on the route that year.</p>`,
           alt: `Detections of Syrian citizens per month by route; 2015 marked, ${num(rtY('EM', 2015))} on the eastern Mediterranean route.` },
-        { scene: 'routes', range: ['2015-01', '2015-12'], events: [],
+        { scene: 'routes', range: ['2015-01', '2015-12'], events: [], focus: 'WB',
           text: `<p>The Western Balkan route counts crossings into Hungary, Croatia, Bulgaria and Romania from the Western Balkans. Frontex notes that the same person may cross the external border several times: someone who entered the EU in Greece and travelled on over land left the EU and crossed its external border again there. In 2015, Frontex records ${num(rtY('WB', 2015, 'a'))} detections on this route, ${num(rtY('WB', 2015, 'u'))} of them without a known nationality, so the Syrian count there (${num(rtY('WB', 2015))}) is far from complete.</p>`,
           alt: 'Detections of Syrian citizens per month by route; the Western Balkan route in 2015, nationality mostly unknown.' },
         { scene: 'routes', range: ['2016-01', '2017-12'], events: [['2016-03-18', 'EU–Türkiye statement']],
@@ -521,7 +521,7 @@
         note: () => { const r = meta('Frontex'); return `Sources: Frontex${r ? ` (${esc(r.i)})` : ''}, detections, not people; Eurostat (migr_asyappctza), applicants per country. Discs and rings each have their own scale: their sizes cannot be compared.${routeOut.length ? ` Not on the map: ${andList(routeOut)}.` : ''} Map: ${esc(D.region.meta.source || '')}.`; },
         draw: drawRouteMap },
       routes: { title: () => 'Detections of Syrian citizens at the EU’s external borders, per month',
-        key: () => '<span><i class="syr-sw syr-sw--em"></i>Eastern Mediterranean</span><span><i class="syr-ln syr-ln--wb"></i>Western Balkans</span><span><i class="syr-ln syr-ln--cm"></i>Central Mediterranean</span><span><i class="syr-sw syr-sw--ev"></i>Event</span>',
+        key: (s) => `<span><i class="syr-sw syr-sw--em"></i>Eastern Mediterranean</span><span><i class="syr-ln syr-ln--wb${s.focus === 'WB' ? ' is-focus' : ''}"></i>Western Balkans</span><span><i class="syr-ln syr-ln--cm"></i>Central Mediterranean</span><span><i class="syr-sw syr-sw--ev"></i>Event</span>`,
         note: (s) => { const r = meta('Frontex'); return `Source: Frontex${r ? `, ${esc(r.i)}` : ''}. Detections, not people. The three largest routes shown.${s.zoom ? ' Months since 2019, on an enlarged scale.' : ''}`; },
         draw: drawRoutes },
       asylum: { sex: 'eurostat', title: () => 'First-time asylum applicants with Syrian citizenship, per month',
@@ -621,6 +621,7 @@
       sexEl.inert = !sexOn;
       sexEl.setAttribute('aria-hidden', String(!sexOn));
       sexEl.querySelectorAll('button').forEach((b) => { b.disabled = !sexOn; });
+      clipCards();   // the key's height may have changed
     }
 
     // the switch: All / Male / Female, for the graphics whose data has sex; hidden on the others
@@ -668,7 +669,7 @@
     document.addEventListener('click', (e) => { if (!chart.contains(e.target)) tip.hide(); });
     chart.addEventListener('click', () => tip.hide());   // a tap on the graphic away from its marks (a mark's own tap stops here)
     const ym = d3.timeFormat('%Y-%m');
-    const sexWord = () => (SEX === 'T' ? '' : SEX === 'M' ? ' · male' : ' · female');
+    const sexWord = () => (SEX === 'T' ? '' : SEX === 'M' ? ' (male)' : ' (female)');   // as in the graphic's title
     const ttRow = (sw, label, value) => `<div><dt>${sw ? `<i class="${sw}"></i>` : ''}${label}</dt><dd>${value}</dd></div>`;
     const ttHtml = (meta, title, rows, note) => `<div class="tt__meta">${meta}</div>${title ? `<div class="tt__title">${title}</div>` : ''}`
       + `<dl class="tt__rows">${rows.join('')}</dl>${note ? `<p class="tt__note">${note}</p>` : ''}`;
@@ -932,11 +933,14 @@
       const frame = { type: 'MultiPoint', coordinates: [[-9.5, 36], [-9.5, 43.8], [44, 30], [44, 56], [2, 30], [10.5, 61], [24, 61.5], [23, 29]] };
       const proj = d3.geoAzimuthalEqualArea().rotate([-23, -44]).fitExtent([[4, 4], [w - 4, h - 4]], frame);
       const path = d3.geoPath(proj);
+      // the countries are drawn cut to the map's box, so no shape reaches beyond the graphic (centres and the
+      // other marks use the uncut projection)
+      const pathCut = d3.geoPath(d3.geoAzimuthalEqualArea().rotate([-23, -44]).fitExtent([[4, 4], [w - 4, h - 4]], frame).clipExtent([[0, 0], [w, h]]));
       const id = `syr-clip-${++clipN}`;
       svg.append('clipPath').attr('id', id).append('rect').attr('width', w).attr('height', h);
       const g = svg.append('g').attr('clip-path', `url(#${id})`);
       g.append('g').selectAll('path').data(feats).join('path')
-        .attr('class', (f) => (f.id === 'DE' ? 'syr-cty syr-cty--de' : f.id === 'SY' ? 'syr-cty syr-cty--sy' : 'syr-cty')).attr('d', path);
+        .attr('class', (f) => (f.id === 'DE' ? 'syr-cty syr-cty--de' : f.id === 'SY' ? 'syr-cty syr-cty--sy' : 'syr-cty')).attr('d', pathCut);
       const curve = d3.line().curve(d3.curveCatmullRom.alpha(0.5));
       g.append('g').selectAll('path').data(PATHS).join('path').attr('class', 'syr-path').attr('d', (p) => curve(p.map((c) => proj(c))));
       const sy = feats.find((f) => f.id === 'SY');
@@ -1069,6 +1073,7 @@
         }
         setBand(rect, x, s.range[0], s.range[1], dur);
         drawEvents(evg, s.events || [], x, m, h, w, dur);
+        wb.classed('is-focus', s.focus === 'WB');   // the route the step is about, in ink
       };
     }
 
@@ -1342,11 +1347,28 @@
       stepEls.forEach((el, i) => el.classList.toggle('is-active', i === k));
       show(k, animate);
     }
+    // narrow: the cards scroll over the graphic but pass under its head (kicker, switch, title, key). Each card is
+    // clipped at the key's lower edge, which also keeps the switch tappable (clip-path clips hit-testing too).
+    const cards = [...root.querySelectorAll('.step__text, .chapter__head, .chapter h3')];
+    const keyEl = $('#key');
+    function clipCards() {
+      const narrow = root.clientWidth <= 860;
+      const line = narrow ? keyEl.getBoundingClientRect().bottom : 0;
+      cards.forEach((c) => {
+        let clip = '';
+        if (narrow) {
+          const r = c.getBoundingClientRect();
+          if (r.bottom <= line) clip = 'inset(100% 0 0 0)';
+          else if (r.top < line) clip = `inset(${Math.ceil(line - r.top)}px 0 0 0)`;
+        }
+        if (c.style.clipPath !== clip) c.style.clipPath = clip;
+      });
+    }
     let ticking = false;
     window.addEventListener('scroll', () => {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(() => { ticking = false; pick(); });
+      requestAnimationFrame(() => { ticking = false; pick(); clipCards(); });
     }, { passive: true });
     let lastW = 0, lastH = 0;
     const redraw = () => {
@@ -1356,6 +1378,7 @@
       scene = null; update = null;
       if (active >= 0) show(active, false);
       pick(false);
+      clipCards();
     };
     if ('ResizeObserver' in window) new ResizeObserver(() => requestAnimationFrame(redraw)).observe(chart);
     else window.addEventListener('resize', redraw);
