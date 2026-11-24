@@ -15,12 +15,12 @@
 
 /* Layout: soft Bauhaus. An asymmetric two-column grid: a narrow rail carries each section's
    heading and explanation, a wide field carries the chart. One column under 760px.
-   Colours come only from theme.css tokens. Type follows the main website: Helvetica/Arial for
+   Colours come only from theme.css tokens. Type follows the main website: Arial for
    headings, reading text and italic quotations; Google Sans Code for navigation and supporting
    information (labels, axes, notes, figures in tables). */
 .syr {
-  --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: Arial, Helvetica, sans-serif;
+  --font-body: Arial, Helvetica, sans-serif;
   --font-support: "Google Sans Code", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --on-yellow: #2D3238;          /* text on the yellow fill, same in both themes */
   --radius: 0;
@@ -48,7 +48,7 @@
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-.syr h1, .syr h2, .syr h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; margin: 0; text-wrap: balance; }
+.syr h1, .syr h2, .syr h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; margin: 0; text-wrap: balance; }
 .syr p { margin: 0; }
 .syr a { text-underline-offset: 0.18em; }
 .syr em, .syr q, .syr blockquote { font-family: var(--font-body); font-style: italic; }
@@ -60,9 +60,10 @@
   text-transform: uppercase;
   color: var(--muted);
 }
-/* Title full stop: a drawn circle (Helvetica's full stop is square). Sits on the baseline. */
+/* Heading stop: a drawn circle, 0.12em wide, 0.07em after the last letter (a typed full stop is square). Sits on the
+   baseline. */
 /* An inline graphic, not an empty box: every engine puts its bottom edge on the text baseline. */
-.syr .title-dot { display: inline-block; width: 0.15em; height: 0.15em; margin: 0 0 0 0.06em; padding: 0; vertical-align: baseline; overflow: visible; }
+.syr .title-dot { display: inline-block; width: 0.12em; height: 0.12em; margin: 0 0 0 0.07em; padding: 0; vertical-align: baseline; overflow: visible; }
 .syr .title-dot circle { fill: var(--red); }
 /* ---------- Masthead ---------- */
 .syr .masthead {
@@ -180,8 +181,8 @@
 .syr td.date { font-family: var(--font-support); white-space: nowrap; }
 
 /* ---------- Footer ---------- */
-.syr .foot { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); padding-block: clamp(2.5rem, 6vw, 4rem); }
-.syr .foot h2 { font-size: var(--step-1); }
+.syr .foot { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.syr .foot h2 { font-size: var(--step-2); }
 .syr .foot ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; color: var(--muted); max-width: 44rem; }
 .syr .glossary { padding-bottom: 0; }
 .syr .glossary dl { margin: 0; display: grid; gap: 0.35rem 0; max-width: 44rem; }
@@ -273,6 +274,15 @@
 .syr .step__text { display: grid; gap: 0.75rem; max-width: 26rem; color: var(--muted); transition: color 0.25s; }
 .syr .step.is-active .step__text { color: var(--ink); }
 .syr .step__text a { overflow-wrap: anywhere; }
+/* Wide: the graphic's head starts on the chapter heading's top line (the graphic's top padding is the first chapter's),
+   and its parts stack from there; the step texts start at the top of their steps. Not centred vertically. */
+@container syr (width > 860px) {
+  .syr .story__graphic { padding-block: clamp(2.5rem, 6vw, 4.5rem) 1rem; }
+  .syr .story__figure { justify-content: flex-start; }
+  .syr .chapter__head { margin-bottom: 0; }
+  .syr .step, .syr .step:first-of-type { align-content: start; }
+  .syr .step:first-of-type { padding-top: 1rem; }
+}
 .syr .step__text .note { color: var(--muted); }
 .syr .step--prep .step__text { border-left: 3px solid var(--rule); padding-left: 1rem; }
 .syr .prep { font-family: var(--font-support); font-size: var(--step--1); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -358,11 +368,11 @@
 .syr .syr-size--ring { fill: none; stroke: var(--ink); stroke-width: 1.4px; }
 .syr .syr-sw--ring { border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); }
 .syr .syr-sw--ringde { border-radius: 50%; box-shadow: inset 0 0 0 2px var(--blue); }
-/* the All / Male / Female switch: compact; hidden where a graphic has no breakdown by sex (its place kept) */
+/* the All / Male / Female switch: 44px like every switch; hidden where a graphic has no breakdown by sex (its place kept) */
 .syr .story__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; }
 .syr .story__top .eyebrow { margin: 0; }
-.syr .syr-sex { width: auto; flex: none; background: repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px); }
-.syr .syr-sex button { height: 32px; padding: 0 0.6rem; font-size: 0.8125rem; }
+.syr .syr-sex { width: auto; flex: none; background: repeating-linear-gradient(to bottom, transparent 0 43px, var(--rule) 43px 44px); }
+.syr .syr-sex button { height: 44px; padding: 0 0.6rem; font-size: 0.8125rem; }
 .syr .syr-sex.is-off { visibility: hidden; }
 /* chapters in preparation */
 .syr .chart text.syr-prep { fill: var(--muted); font-size: 13px; text-anchor: middle; }

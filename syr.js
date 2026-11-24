@@ -54,7 +54,7 @@
     <div class="story__steps" id="syr-steps"></div>
   </div>
   <section class="foot" aria-labelledby="syr-h-method">
-    <div><h2 id="syr-h-method">Method and sources</h2></div>
+    <div><h2 id="syr-h-method">Method and sources${DOT}</h2></div>
     <div>
       <ul id="syr-method"></ul>
       <p class="credit" id="syr-credit"></p>
